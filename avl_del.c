@@ -221,8 +221,9 @@ Insert( ElementType X, AvlTree T )
 AvlTree
 Delete( ElementType X, AvlTree T )
 {
-    if(T==NULL)
-        FatalError("No such value\n");
+    if(T==NULL){
+        printf("no such value %d\n", X);
+    }
     
     ElementType val = T->Element;
     if(X==T->Element)
@@ -236,9 +237,9 @@ Delete( ElementType X, AvlTree T )
         }
 
         if(T->Right!=NULL)
-            tmp = FindMax(T->Right);
+            tmp = FindMin(T->Right);
         else if(T->Left!=NULL)
-            tmp = FindMin(T->Left);
+            tmp = FindMax(T->Left);
 
          val=tmp->Element;
          X=tmp->Element;
@@ -247,7 +248,7 @@ Delete( ElementType X, AvlTree T )
     {
         T->Left = Delete(X, T->Left);
         if(Height(T->Right)-Height(T->Left)==2)
-            if(Height(T->Right->Right)>Height(T->Right->Left))
+            if(Height(T->Right->Right)>=Height(T->Right->Left))
                 T=SingleRotateWithRight(T);
             else
                 T=DoubleRotateWithRight(T);
@@ -256,7 +257,7 @@ Delete( ElementType X, AvlTree T )
     {
         T->Right = Delete(X, T->Right);
         if(Height(T->Left)-Height(T->Right)==2)
-            if(Height(T->Left->Left)>Height(T->Left->Right))
+            if(Height(T->Left->Left)>=Height(T->Left->Right))
                 T=SingleRotateWithLeft(T);
             else
                 T=DoubleRotateWithLeft(T);
@@ -274,5 +275,20 @@ Retrieve( Position P )
 
 int main()
 {
+    int i;
+    AvlTree root = NULL;
+    root = Insert(1, root);
+    
+    for(i=2;i<=10000;i++){
+        root = Insert(i, root);
+        
+    }
+
+    for(i=2;i<=10000;++i)
+    {
+        printf("i=%d and %d\n",i, Find(i,root)->Height);
+        root = Delete(i, root);
+        printf("Heigiht=%d\n", Height(root));
+    }
     return 0;
 }

@@ -218,6 +218,15 @@ Insert( ElementType X, AvlTree T )
 }
 /* END */
 
+void PrintTree(AvlTree root) {
+    if(root!=NULL)
+    {
+        PrintTree(root->Left);
+        printf("%d ", root->Element);
+        PrintTree(root->Right);
+    }
+}
+
 AvlTree
 Delete( ElementType X, AvlTree T )
 {
@@ -231,7 +240,7 @@ Delete( ElementType X, AvlTree T )
         AvlTree tmp = NULL;
         
         if(T->Right==NULL && T->Left==NULL)
-        {
+        {            
             free(T);
             return NULL;
         }
@@ -241,12 +250,14 @@ Delete( ElementType X, AvlTree T )
         else if(T->Left!=NULL)
             tmp = FindMax(T->Left);
 
-         val=tmp->Element;
+         val=tmp->Element;        
          X=tmp->Element;
     }
     if(X<T->Element)
     {
-        T->Left = Delete(X, T->Left);
+        printf("Before crash X=%d and  T->Element=%d and T->Height=%d\n",
+               X, T->Element, T->Height);
+        T->Left = Delete(X, T->Left);        
         if(Height(T->Right)-Height(T->Left)==2)
             if(Height(T->Right->Right)>=Height(T->Right->Left))
                 T=SingleRotateWithRight(T);
@@ -255,6 +266,8 @@ Delete( ElementType X, AvlTree T )
     }    
     else if(X>T->Element)
     {
+        printf("Before crash X=%d and  T->Element=%d and T->Height=%d\n",
+               X, T->Element, T->Height);               
         T->Right = Delete(X, T->Right);
         if(Height(T->Left)-Height(T->Right)==2)
             if(Height(T->Left->Left)>=Height(T->Left->Right))
@@ -262,8 +275,12 @@ Delete( ElementType X, AvlTree T )
             else
                 T=DoubleRotateWithLeft(T);
     }
-    if(val!=T->Element)
-        T->Element=val;
+    T->Height = (Height(T->Left)>Height(T->Right))?Height(T->Left):Height(T->Right);
+    T->Height+=1;
+
+    printf("T value %d & val %d\n", T->Element, val);
+    T->Element=val;
+ 
     return T;
 }
 
@@ -279,16 +296,18 @@ int main()
     AvlTree root = NULL;
     root = Insert(1, root);
     
-    for(i=2;i<=10000;i++){
-        root = Insert(i, root);
-        
+    for(i=2;i<=10;i++){
+        root =Insert(i, root);        
     }
 
-    for(i=2;i<=10000;++i)
+    for(i=2;i<=10;++i)
     {
-        printf("i=%d and %d\n",i, Find(i,root)->Height);
+        //printf("i=%d and %d\n",i, Find(i,root)->Height);
+        //printf("root =%d\n", root->Element);
+        printf("Root %d &&&&& Delete %d:\n", root->Element, i);
         root = Delete(i, root);
-        printf("Heigiht=%d\n", Height(root));
+        PrintTree(root);
+        printf("\nHeigiht=%d\n", Height(root));
     }
     return 0;
 }

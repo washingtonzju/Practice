@@ -250,12 +250,14 @@ Delete( ElementType X, AvlTree T )
         else if(T->Left!=NULL)
             tmp = FindMax(T->Left);
 
-         val=tmp->Element;        
-         X=tmp->Element;
+         val=tmp->Element;
+         printf("change element val : %d and element %d\n", val, T->Element);
+         X=val;
     }
     if(X<T->Element)
     {
-        printf("Before crash X=%d and  T->Element=%d and T->Height=%d\n",
+        T->Element=val;
+        printf("L Before crash X=%d and  T->Element=%d and T->Height=%d\n",
                X, T->Element, T->Height);
         T->Left = Delete(X, T->Left);        
         if(Height(T->Right)-Height(T->Left)==2)
@@ -266,7 +268,8 @@ Delete( ElementType X, AvlTree T )
     }    
     else if(X>T->Element)
     {
-        printf("Before crash X=%d and  T->Element=%d and T->Height=%d\n",
+        T->Element=val;
+        printf("R Before crash X=%d and  T->Element=%d and T->Height=%d\n",
                X, T->Element, T->Height);               
         T->Right = Delete(X, T->Right);
         if(Height(T->Left)-Height(T->Right)==2)
@@ -279,7 +282,7 @@ Delete( ElementType X, AvlTree T )
     T->Height+=1;
 
     printf("T value %d & val %d\n", T->Element, val);
-    T->Element=val;
+    
  
     return T;
 }
@@ -296,11 +299,11 @@ int main()
     AvlTree root = NULL;
     root = Insert(1, root);
     
-    for(i=2;i<=10;i++){
+    for(i=2;i<=100;i++){
         root =Insert(i, root);        
     }
 
-    for(i=2;i<=10;++i)
+    for(i=2;i<=100;++i)
     {
         //printf("i=%d and %d\n",i, Find(i,root)->Height);
         //printf("root =%d\n", root->Element);
